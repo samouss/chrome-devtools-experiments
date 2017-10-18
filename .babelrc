@@ -1,0 +1,23 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": [
+          "last 2 versions",
+          "ie >= 10"
+        ],
+      },
+      "modules": false,
+      "useBuiltIns": true,
+    }],
+    "react",
+    "stage-2",
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        "transform-es2015-modules-commonjs",
+      ],
+    },
+  },
+}

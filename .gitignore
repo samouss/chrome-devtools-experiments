@@ -1,0 +1,7 @@
+# Folder
+/node_modules
+/dist
+
+# Files
+npm-debug.log
+.DS_Store
