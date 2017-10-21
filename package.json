@@ -4,9 +4,10 @@
   "description": "Wepack React with Babel, CSS Modules, ESLint, Jest, Enzyme",
   "scripts": {
     "clean": "rm -rf dist",
-    "start": "npm run clean && npm run manifest && webpack-dev-server --inline --no-info",
-    "build": "npm run clean && npm run manifest && webpack --env.production",
-    "manifest": "mkdir dist && cp manifest.json dist/manifest.json",
+    "prepare": "mkdir -p dist",
+    "start": "npm run clean && npm run prepare && npm run manifest && webpack-dev-server --inline --no-info",
+    "build": "npm run clean && npm run prepare && npm run manifest && webpack --env.production",
+    "manifest": "cp manifest.json dist/manifest.json",
     "test": "jest",
     "test:watch": "jest --watch"
   },
