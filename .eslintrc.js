@@ -16,6 +16,9 @@ module.exports = {
     node: true,
     'jest/globals': true,
   },
+  globals: {
+    chrome: true,
+  },
   settings: {
     'import/resolver': {
       webpack: {
