@@ -7,7 +7,8 @@ const WriteFilePlugin = require('write-file-webpack-plugin');
 const clean = plugins =>
   plugins.filter(x => !!x);
 
-const JSFilenameIdentifier = '[name].[chunkhash:8].js';
+const JSFilenameIdentifier = isProduction =>
+  (!isProduction ? '[name].js' : '[name].[chunkhash:8].js');
 
 const CSSLoaderLocalIdentifier = isProduction =>
   (!isProduction ? '[local]--[hash:base64:5]' : '[hash:base64]');
@@ -41,7 +42,7 @@ module.exports = (options = {}) => {
     output: {
       path: `${__dirname}/dist`,
       publicPath: '/',
-      filename: JSFilenameIdentifier,
+      filename: JSFilenameIdentifier(isProduction),
     },
     devServer: {
       contentBase: path.join(__dirname, 'dist'),
@@ -102,7 +103,7 @@ module.exports = (options = {}) => {
 
       new webpack.optimize.CommonsChunkPlugin({
         name: 'vendor',
-        filename: JSFilenameIdentifier,
+        filename: JSFilenameIdentifier(isProduction),
         minChunks: module => (
           module.context &&
           module.context.indexOf('node_modules') !== -1 &&
@@ -113,7 +114,7 @@ module.exports = (options = {}) => {
 
       new webpack.optimize.CommonsChunkPlugin({
         name: 'manifest',
-        filename: JSFilenameIdentifier,
+        filename: JSFilenameIdentifier(isProduction),
         minChunks: Infinity,
       }),
 
