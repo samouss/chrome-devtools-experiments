@@ -11,7 +11,7 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{ width: '980px', margin: '50px auto' }}>
+      <div style={{ padding: '10px' }}>
         Hello from the panel {this.state.message}!
       </div>
     );
