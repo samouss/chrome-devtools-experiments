@@ -34,6 +34,10 @@ module.exports = (options = {}) => {
         `${__dirname}/src/polyfills.js`,
         `${__dirname}/src/background.js`,
       ],
+      contentScript: [
+        `${__dirname}/src/polyfills.js`,
+        `${__dirname}/src/contentScript.js`,
+      ],
       panel: [
         `${__dirname}/src/polyfills.js`,
         `${__dirname}/src/panel/index.js`,
