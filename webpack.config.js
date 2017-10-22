@@ -101,35 +101,18 @@ module.exports = (options = {}) => {
 
       new webpack.optimize.ModuleConcatenationPlugin(),
 
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        filename: JSFilenameIdentifier(isProduction),
-        minChunks: module => (
-          module.context &&
-          module.context.indexOf('node_modules') !== -1 &&
-          module.resource &&
-          module.resource.match(/\.js$/)
-        ),
-      }),
-
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'manifest',
-        filename: JSFilenameIdentifier(isProduction),
-        minChunks: Infinity,
-      }),
-
       new HtmlPlugin({
         inject: true,
         template: 'src/panel/index.html',
         filename: 'panel.html',
-        chunks: ['manifest', 'vendor', 'panel'],
+        chunks: ['panel'],
       }),
 
       new HtmlPlugin({
         inject: true,
         template: 'src/devtools/index.html',
         filename: 'devtools.html',
-        chunks: ['manifest', 'vendor', 'devtools'],
+        chunks: ['devtools'],
       }),
 
       isProduction && new ExtractTextPlugin({
