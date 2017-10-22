@@ -30,6 +30,10 @@ module.exports = (options = {}) => {
   return {
     devtool: !isProduction ? 'cheap-module-source-map' : 'source-map',
     entry: {
+      background: [
+        `${__dirname}/src/polyfills.js`,
+        `${__dirname}/src/background.js`,
+      ],
       panel: [
         `${__dirname}/src/polyfills.js`,
         `${__dirname}/src/panel/index.js`,
