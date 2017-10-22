@@ -1,7 +1,7 @@
 // Enable the connection with the DevTools
 // Trigger when the DevTools create a connection
 chrome.runtime.onConnect.addListener(port => {
-  console.log('Back:port - onConnect');
+  console.log('Back:port - onConnect', port);
 
   // Trigger when the DevTools post a message
   port.onMessage.addListener(event => {
