@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
+const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 
 const clean = plugins =>
   plugins.filter(x => !!x);
@@ -106,6 +107,12 @@ module.exports = (options = {}) => {
     },
     plugins: clean([
       !isProduction && new WriteFilePlugin(),
+      !isProduction && new ChromeExtensionReloader({
+        entries: {
+          contentScript: 'contentScript',
+          background: 'background',
+        },
+      }),
 
       new webpack.optimize.ModuleConcatenationPlugin(),
 
