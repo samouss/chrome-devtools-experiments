@@ -3,10 +3,17 @@ const port = chrome.runtime.connect({
 });
 
 const onMessageFromDevTools = (event, sender) => {
-  console.group('onMessageFromDevTools');
+  console.group('contentScript: onMessageFromDevTools');
   console.log(event);
   console.log(sender);
   console.groupEnd();
+
+  if (event.type === 'CONNECTION_READY') {
+    window.postMessage({
+      ...event,
+      source: 'chrome-devtools-experiments-content-script',
+    }, '*');
+  }
 };
 
 const onMessageFromPage = ({ source, data: message }) => {
