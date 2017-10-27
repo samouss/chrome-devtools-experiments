@@ -1,16 +1,59 @@
-// Enable the connection with the DevTools
-// Trigger when the DevTools create a connection
-chrome.runtime.onConnect.addListener(port => {
-  console.log('Back:port - onConnect', port);
+const connections = new Map();
 
-  // Trigger when the DevTools post a message
-  port.onMessage.addListener(event => {
-    console.log('Back:port - onMessage', event);
+const isInteger = x => !Number.isNaN(parseInt(x, 10));
+const extractTabIdFromPort = port =>
+  (isInteger(port.name) ? parseInt(port.name, 10) : port.sender.tab.id);
+
+const installContentScript = tabId => {
+  chrome.tabs.executeScript(tabId, {
+    file: './contentScript.js',
   });
-});
+};
 
-// Enable the connection with the contentScript
-// Trigger when the contentScript post a message
-chrome.runtime.onMessage.addListener(() => {
-  console.log('Back:runtime - onMessage');
+// Setup the connection between:
+//  - contentScript -> background -> DevTools
+//  - DevTools -> background -> contentScript
+const createChannel = (connections, devtools, contentScript) => {
+  const devtoolsOnMessage = event => contentScript.postMessage(event);
+  const contentScriptOnMessage = event => devtools.postMessage(event);
+  const onDisconnect = port => {
+    devtools.onMessage.removeListener(devtoolsOnMessage);
+    contentScript.onMessage.removeListener(contentScriptOnMessage);
+
+    devtools.onDisconnect.removeListener(onDisconnect);
+    contentScript.onDisconnect.removeListener(onDisconnect);
+
+    devtools.disconnect();
+    contentScript.disconnect();
+
+    connections.delete(extractTabIdFromPort(port));
+  };
+
+  devtools.onMessage.addListener(devtoolsOnMessage);
+  contentScript.onMessage.addListener(contentScriptOnMessage);
+
+  devtools.onDisconnect.addListener(onDisconnect);
+  contentScript.onDisconnect.addListener(onDisconnect);
+};
+
+chrome.runtime.onConnect.addListener(port => {
+  const isDevtoolsPort = isInteger(port.name);
+  const tabId = extractTabIdFromPort(port);
+  const tabName = isDevtoolsPort ? 'devtools' : 'contentScript';
+
+  if (isDevtoolsPort) {
+    installContentScript(tabId);
+  }
+
+  connections.set(tabId, {
+    ...connections.get(tabId),
+    [tabName]: port,
+  });
+
+  const devtoolsConnection = connections.get(tabId).devtools;
+  const contentScriptConnection = connections.get(tabId).contentScript;
+
+  if (devtoolsConnection && contentScriptConnection) {
+    createChannel(connections, devtoolsConnection, contentScriptConnection);
+  }
 });
