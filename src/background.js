@@ -55,5 +55,8 @@ chrome.runtime.onConnect.addListener(port => {
 
   if (devtoolsConnection && contentScriptConnection) {
     createChannel(connections, devtoolsConnection, contentScriptConnection);
+
+    // Inform contentScript that the connections are ready
+    contentScriptConnection.postMessage({ type: 'CONNECTION_READY' });
   }
 });
