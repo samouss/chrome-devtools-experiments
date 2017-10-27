@@ -3,21 +3,44 @@ import { render } from 'react-dom';
 import App from './App';
 import './index.css';
 
-console.log('Hello from panel');
+const onMessageFromPage = event => {
+  render(
+    <App
+      name={event.payload.name}
+      version={event.payload.version}
+    />,
+    document.getElementById('root'),
+  );
+};
 
-const port = chrome.runtime.connect({
-  name: 'my-panel',
-});
+const onDisconnect = port => {
+  port.onMessage.removeListener(onMessageFromPage);
+  port.onDisconnect.removeListener(onDisconnect);
 
-port.onMessage.addListener(() => {
-  console.log('Panel - onMessage');
-});
+  port.disconnect();
+};
 
-port.postMessage({
-  tabId: chrome.devtools.inspectedWindow.tabId,
-});
+const createListenerAndApp = () => {
+  const port = chrome.runtime.connect({
+    name: chrome.devtools.inspectedWindow.tabId.toString(),
+  });
 
-render(
-  <App />,
-  document.getElementById('root'),
-);
+  port.onMessage.addListener(onMessageFromPage);
+  port.onDisconnect.removeListener(onDisconnect);
+
+  port.postMessage({
+    source: 'chrome-devtools-experiments-panel',
+    payload: {
+      name: 'revert',
+    },
+  });
+
+  render(
+    <App />,
+    document.getElementById('root'),
+  );
+};
+
+chrome.devtools.network.onNavigated.addListener(createListenerAndApp);
+
+createListenerAndApp();
