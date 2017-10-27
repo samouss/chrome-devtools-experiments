@@ -1,15 +1,31 @@
-import hook from './inject/hook';
-import createProxy from './inject/proxy';
+const port = chrome.runtime.connect({
+  name: 'contentScript',
+});
 
-console.log('Hello from the contentScript!');
+const onMessageFromDevTools = (event, sender) => {
+  console.group('onMessageFromDevTools');
+  console.log(event);
+  console.log(sender);
+  console.groupEnd();
+};
 
-createProxy();
+const onMessageFromPage = ({ source, data: message }) => {
+  const isSameSource = source === window;
+  const isFromExtension = message && message.source === 'chrome-devtools-experiments-hook';
 
-const code = `
-  window.__DEVTOOLS_EXPERIMENTS_HOOK__ = ${hook.toString()};
-`;
+  if (isSameSource && isFromExtension) {
+    port.postMessage(message);
+  }
+};
 
-const script = document.createElement('script');
-script.textContent = code;
-document.documentElement.appendChild(script);
-script.parentNode.removeChild(script);
+const onDisconnect = port => {
+  port.onMessage.removeListener(onMessageFromDevTools);
+  port.onDisconnect.removeListener(onDisconnect);
+  window.removeEventListener('message', onMessageFromPage);
+  port.disconnect();
+};
+
+port.onMessage.addListener(onMessageFromDevTools);
+port.onDisconnect.addListener(onDisconnect);
+
+window.addEventListener('message', onMessageFromPage);
