@@ -1,8 +1,22 @@
 const hook = configuration => {
-  const createMessage = payload => ({
-    source: 'chrome-devtools-experiments-hook',
-    payload,
-  });
+  const state = {
+    isConnectionReady: false,
+    queue: [],
+  };
+
+  const postMessageFromHook = payload =>
+    window.postMessage({
+      source: 'chrome-devtools-experiments-hook',
+      payload,
+    }, '*');
+
+  const postMessageIfConnectionIsReady = event => {
+    if (!state.isConnectionReady) {
+      state.queue.push(event);
+    } else {
+      postMessageFromHook(event);
+    }
+  };
 
   const onMessageFromDevTools = event => {
     const isSameSource = event.source === window;
@@ -17,16 +31,16 @@ const hook = configuration => {
       console.groupEnd();
 
       if (type === 'CONNECTION_READY') {
-        console.log('flush queue');
+        state.queue.forEach(postMessageFromHook);
+
+        state.isConnectionReady = true;
       }
     }
   };
 
-  setTimeout(() => {
-    window.postMessage(createMessage(configuration), '*');
-  }, 2500);
-
   window.addEventListener('message', onMessageFromDevTools);
+
+  postMessageIfConnectionIsReady(configuration);
 };
 
 const code = `
