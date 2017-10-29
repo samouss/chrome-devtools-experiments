@@ -43,11 +43,5 @@ const hook = configuration => {
   postMessageIfConnectionIsReady(configuration);
 };
 
-const code = `
-  window.__DEVTOOLS_EXPERIMENTS_HOOK__ = ${hook.toString()};
-`;
-
-const script = document.createElement('script');
-script.textContent = code;
-document.documentElement.appendChild(script);
-script.parentNode.removeChild(script);
+// eslint-disable-next-line no-underscore-dangle
+window.__DEVTOOLS_EXPERIMENTS_HOOK__ = hook;
