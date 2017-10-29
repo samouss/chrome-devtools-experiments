@@ -9,7 +9,7 @@ const clean = plugins =>
   plugins.filter(x => !!x);
 
 const JSFilenameIdentifier = isProduction =>
-  (!isProduction ? '[name].js' : '[name].[chunkhash:8].js');
+  (!isProduction ? '[name].js' : '[name].js');
 
 const CSSLoaderLocalIdentifier = isProduction =>
   (!isProduction ? '[local]--[hash:base64:5]' : '[hash:base64]');
