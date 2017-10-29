@@ -51,6 +51,10 @@ module.exports = (options = {}) => {
         `${__dirname}/src/polyfills.js`,
         `${__dirname}/src/inject/hook.js`,
       ],
+      loader: [
+        `${__dirname}/src/polyfills.js`,
+        `${__dirname}/src/inject/loader.js`,
+      ],
     },
     output: {
       path: `${__dirname}/dist`,
