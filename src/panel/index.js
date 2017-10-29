@@ -4,6 +4,10 @@ import App from './App';
 import './index.css';
 
 const onMessageFromPage = event => {
+  console.group('Panel: onMessageFromPage');
+  console.log('Event', event);
+  console.groupEnd();
+
   render(
     <App
       name={event.payload.name}
