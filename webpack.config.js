@@ -8,9 +8,6 @@ const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 const clean = plugins =>
   plugins.filter(x => !!x);
 
-const JSFilenameIdentifier = isProduction =>
-  (!isProduction ? '[name].js' : '[name].js');
-
 const CSSLoaderLocalIdentifier = isProduction =>
   (!isProduction ? '[local]--[hash:base64:5]' : '[hash:base64]');
 
@@ -58,8 +55,7 @@ module.exports = (options = {}) => {
     },
     output: {
       path: `${__dirname}/dist`,
-      publicPath: '/',
-      filename: JSFilenameIdentifier(isProduction),
+      filename: '[name].js',
     },
     devServer: {
       contentBase: path.join(__dirname, 'dist'),
