@@ -1,9 +1,5 @@
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import hook from 'raw-loader!./hook';
-
-// Handle loading the bundle sync
-// script.textContent = require('raw-loader!./hook');
+/* eslint-disable */
 const script = document.createElement('script');
-script.textContent = hook;
+script.textContent = require('!raw-loader!../../dist/hook');
 document.documentElement.appendChild(script);
 script.parentNode.removeChild(script);
