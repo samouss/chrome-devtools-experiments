@@ -15,8 +15,8 @@
       "run_at": "document_start"
     }
   ],
-   "permissions":[
-     "*://*/*",
-     "<all_urls>"
-   ]
+  "permissions": [
+    "*://*/*",
+    "<all_urls>"
+  ]
 }
