@@ -16,6 +16,7 @@ class App extends Component {
         Hello from the panel {this.state.message}!
         <p>App: {this.props.name}</p>
         <p>Version: {this.props.version}</p>
+        <p>Value: {this.props.value}</p>
       </div>
     );
   }
@@ -24,11 +25,13 @@ class App extends Component {
 App.propTypes = {
   version: PropTypes.string,
   name: PropTypes.string,
+  value: PropTypes.string,
 };
 
 App.defaultProps = {
   version: '',
   name: '',
+  value: '',
 };
 
 export default App;
