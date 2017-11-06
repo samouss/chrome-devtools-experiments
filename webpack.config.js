@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const HtmlPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
-const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 
 const clean = plugins =>
   plugins.filter(x => !!x);
@@ -24,35 +23,8 @@ const CSSLoaderConfiguration = isProduction => ({
 
 module.exports = (options = {}) => {
   const isProduction = !!options.production;
-
-  return {
+  const configuration = {
     devtool: !isProduction ? 'cheap-module-source-map' : 'source-map',
-    entry: {
-      background: [
-        `${__dirname}/src/polyfills.js`,
-        `${__dirname}/src/background.js`,
-      ],
-      contentScript: [
-        `${__dirname}/src/polyfills.js`,
-        `${__dirname}/src/contentScript.js`,
-      ],
-      panel: [
-        `${__dirname}/src/polyfills.js`,
-        `${__dirname}/src/panel/index.js`,
-      ],
-      devtools: [
-        `${__dirname}/src/polyfills.js`,
-        `${__dirname}/src/devtools/index.js`,
-      ],
-      hook: [
-        `${__dirname}/src/polyfills.js`,
-        `${__dirname}/src/inject/hook.js`,
-      ],
-      loader: [
-        `${__dirname}/src/polyfills.js`,
-        `${__dirname}/src/inject/loader.js`,
-      ],
-    },
     output: {
       path: `${__dirname}/dist`,
       filename: '[name].js',
@@ -111,12 +83,6 @@ module.exports = (options = {}) => {
     },
     plugins: clean([
       !isProduction && new WriteFilePlugin(),
-      !isProduction && new ChromeExtensionReloader({
-        entries: {
-          contentScript: 'contentScript',
-          background: 'background',
-        },
-      }),
 
       new webpack.optimize.ModuleConcatenationPlugin(),
 
@@ -160,4 +126,43 @@ module.exports = (options = {}) => {
       }),
     ]),
   };
+
+  return [
+    {
+      ...configuration,
+      name: 'hook',
+      entry: {
+        hook: [
+          `${__dirname}/src/polyfills.js`,
+          `${__dirname}/src/inject/hook.js`,
+        ],
+      },
+    },
+    {
+      ...configuration,
+      dependencies: ['hook'],
+      entry: {
+        background: [
+          `${__dirname}/src/polyfills.js`,
+          `${__dirname}/src/background.js`,
+        ],
+        contentScript: [
+          `${__dirname}/src/polyfills.js`,
+          `${__dirname}/src/contentScript.js`,
+        ],
+        panel: [
+          `${__dirname}/src/polyfills.js`,
+          `${__dirname}/src/panel/index.js`,
+        ],
+        devtools: [
+          `${__dirname}/src/polyfills.js`,
+          `${__dirname}/src/devtools/index.js`,
+        ],
+        loader: [
+          `${__dirname}/src/polyfills.js`,
+          `${__dirname}/src/inject/loader.js`,
+        ],
+      },
+    },
+  ];
 };
