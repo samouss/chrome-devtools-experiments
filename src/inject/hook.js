@@ -1,3 +1,5 @@
+import dependency from './dependency';
+
 const hook = configuration => {
   const state = {
     isConnectionReady: false,
@@ -40,7 +42,10 @@ const hook = configuration => {
 
   window.addEventListener('message', onMessageFromDevTools);
 
-  postMessageIfConnectionIsReady(configuration);
+  postMessageIfConnectionIsReady({
+    ...configuration,
+    ...dependency,
+  });
 };
 
 // eslint-disable-next-line no-underscore-dangle
