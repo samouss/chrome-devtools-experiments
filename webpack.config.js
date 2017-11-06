@@ -123,14 +123,14 @@ module.exports = (options = {}) => {
       new HtmlPlugin({
         inject: true,
         template: 'src/panel/index.html',
-        filename: 'panel.html',
+        filename: `${__dirname}/dist/panel.html`,
         chunks: ['panel'],
       }),
 
       new HtmlPlugin({
         inject: true,
         template: 'src/devtools/index.html',
-        filename: 'devtools.html',
+        filename: `${__dirname}/dist/devtools.html`,
         chunks: ['devtools'],
       }),
 
