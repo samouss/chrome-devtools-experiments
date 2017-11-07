@@ -24,6 +24,32 @@ const CSSLoaderConfiguration = isProduction => ({
 
 module.exports = (options = {}) => {
   const isProduction = !!options.production;
+
+  const hook = {
+    hook: [
+      `${__dirname}/src/polyfills.js`,
+      `${__dirname}/src/inject/hook.js`,
+    ],
+  };
+
+  const extension = {
+    background: [
+      `${__dirname}/src/polyfills.js`,
+      `${__dirname}/src/background.js`,
+    ],
+    contentScript: [
+      `${__dirname}/src/polyfills.js`,
+      `${__dirname}/src/contentScript.js`,
+    ],
+    panel: [
+      `${__dirname}/src/polyfills.js`,
+      `${__dirname}/src/panel/index.js`,
+    ],
+    devtools: `${__dirname}/src/devtools/index.js`,
+    loader: !isProduction ? `${__dirname}/src/loader/development.js`
+      : `${__dirname}/src/loader/production.js`,
+  };
+
   const configuration = {
     devtool: !isProduction ? 'cheap-module-source-map' : 'source-map',
     output: {
@@ -134,42 +160,26 @@ module.exports = (options = {}) => {
     ]),
   };
 
-  return [
-    {
-      ...configuration,
-      name: 'hook',
-      entry: {
-        hook: [
-          `${__dirname}/src/polyfills.js`,
-          `${__dirname}/src/inject/hook.js`,
-        ],
+  if (isProduction) {
+    return [
+      {
+        ...configuration,
+        name: 'hook',
+        entry: hook,
       },
-    },
-    {
-      ...configuration,
-      dependencies: ['hook'],
-      entry: {
-        background: [
-          `${__dirname}/src/polyfills.js`,
-          `${__dirname}/src/background.js`,
-        ],
-        contentScript: [
-          `${__dirname}/src/polyfills.js`,
-          `${__dirname}/src/contentScript.js`,
-        ],
-        panel: [
-          `${__dirname}/src/polyfills.js`,
-          `${__dirname}/src/panel/index.js`,
-        ],
-        devtools: [
-          `${__dirname}/src/polyfills.js`,
-          `${__dirname}/src/devtools/index.js`,
-        ],
-        loader: [
-          `${__dirname}/src/polyfills.js`,
-          `${__dirname}/src/inject/loader.js`,
-        ],
+      {
+        ...configuration,
+        dependencies: ['hook'],
+        entry: extension,
       },
+    ];
+  }
+
+  return {
+    ...configuration,
+    entry: {
+      ...hook,
+      ...extension,
     },
-  ];
+  };
 };
