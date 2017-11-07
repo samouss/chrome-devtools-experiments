@@ -28,7 +28,7 @@ module.exports = (options = {}) => {
   const hook = {
     hook: [
       `${__dirname}/src/polyfills.js`,
-      `${__dirname}/src/inject/hook.js`,
+      `${__dirname}/src/hook/index.js`,
     ],
   };
 
