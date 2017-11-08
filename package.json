@@ -5,7 +5,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "prepare": "mkdir -p dist",
-    "start": "npm run clean && npm run prepare && npm run manifest && webpack-dev-server --inline --no-info",
+    "start:extension": "npm run clean && npm run prepare && npm run manifest && webpack-dev-server --inline --no-info",
+    "start:example": "cd example && npm start",
     "build": "npm run clean && npm run prepare && npm run manifest && webpack --env.production",
     "manifest": "cp src/manifest.json dist/manifest.json",
     "test": "jest",
