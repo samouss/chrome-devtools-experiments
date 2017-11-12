@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
+import App from './App';
 import './index.css';
 
 const run = () => {
@@ -8,12 +9,6 @@ const run = () => {
     name: 'react-sandox',
     version: '1.3.0',
   });
-
-  const App = () => (
-    <div>
-      Hello from the example...
-    </div>
-  );
 
   render(
     <App />,
