@@ -12,7 +12,6 @@ const onMessageFromPage = event => {
     <App
       name={event.payload.name}
       version={event.payload.version}
-      value={event.payload.value}
     />,
     document.getElementById('root'),
   );
