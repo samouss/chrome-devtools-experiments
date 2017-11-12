@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const HtmlPlugin = require('html-webpack-plugin');
 
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const EXTENSION_ENV = process.env.EXTENSION_ENV || 'development';
 
 const clean = plugins =>
   plugins.filter(x => !!x);
@@ -90,7 +90,7 @@ module.exports = () => ({
     }),
 
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
+      'process.env.EXTENSION_ENV': JSON.stringify(EXTENSION_ENV),
     }),
   ]),
 });

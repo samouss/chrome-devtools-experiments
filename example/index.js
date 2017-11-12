@@ -16,7 +16,7 @@ const run = () => {
   );
 };
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.EXTENSION_ENV !== 'production') {
   // eslint-disable-next-line
   const isHookAlreadyLoaded = !!window.__DEVTOOLS_EXPERIMENTS_HOOK__;
 
