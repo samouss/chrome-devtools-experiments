@@ -1,6 +1,8 @@
 const webpack = require('webpack');
 const HtmlPlugin = require('html-webpack-plugin');
 
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
 const clean = plugins =>
   plugins.filter(x => !!x);
 
@@ -85,6 +87,10 @@ module.exports = () => ({
     new HtmlPlugin({
       inject: true,
       template: 'index.html',
+    }),
+
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
     }),
   ]),
 });
